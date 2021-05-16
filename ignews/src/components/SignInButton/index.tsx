@@ -12,7 +12,7 @@ export function SignInButton(){
             {session.user.name}
             <img src={ session.user.image } alt="foto" className = { styles.gitPhoto }/>
             <FiX color="#737380" className = { styles.closeIcon }/>
-            
+
         </button>
     ) : (
         <button type = "button" className = { styles.signInButton } onClick = {() => signIn('github')}>
