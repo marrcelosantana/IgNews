@@ -31,18 +31,18 @@ export default NextAuth({
             query.Create(                                // -> Método pra fazer a inserção.
               query.Collection('users'),                 // -> Nome da tabela.
               { data: {email}}                           //-> Dados do usuário que queremos inserir.
-            ), 
-            query.Get(                                     // -> Equivale ao SELECT do Banco de Dados.
+            ), //else
+            query.Get(                                   // -> Equivale ao SELECT do Banco de Dados.
               query.Match(
                 query.Index('user_by_email'),
-                query.Casefold(user.email)                   // -> Deixa todas as letras do email em minúsculo.
+                query.Casefold(user.email)             // -> Deixa todas as letras do email em minúsculo.
               )
             )
           )
         )
-        return true                                        // -> Significa que o Login deu certo.
+        return true                   // -> Significa que o Login deu certo.
       } catch {
-        return false                                      // -> Login não deu certo.
+        return false                  // -> Login não deu certo.
       }
     }
   }
