@@ -1,33 +1,32 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/client';
-import { stripe } from "../../services/stripe";
+import { stripe } from '../../services/stripe';
 
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-    if (req.method === 'POST'){                                             // Verificando se o método da requisição é POST.
-        const session = await getSession({ req })   
-        
-        const stripeCustomer = await stripe.customers.create({                        //Quem está pagando.
+    if (req.method === 'POST') {
+        const session = await getSession({ req })
+
+        const stripeCustomer = await stripe.customers.create({
             email: session.user.email,
         })
 
         const stripeCheckoutSession = await stripe.checkout.sessions.create({
-            customer: stripeCustomer.id,                                          //ID do usuário no Stripe.         
-            payment_method_types: ['card'],                                // Quais métodos de pagamento aceitar.
-            billing_address_collection: 'required',                       //Obriga o usuário a preencher o endereço.
+            customer: stripeCustomer.id,
+            payment_method_types: ['card'],
+            billing_address_collection: 'required',
             line_items: [
-                { price: 'price_1IqjvsHeTM8gLngyyNG8Km1O', quantity: 1 }             //ID do preço e a quantidade.
+                { price: 'price_1IqjvsHeTM8gLngyyNG8Km1O', quantity: 1 }
             ],
-            mode: 'subscription',                                               //Indica que é pagamento recorrente. 
-            allow_promotion_codes: true,                                        //Para poder criar cupons de desconto.
-            success_url: process.env.STRIPE_SUCESS_URL,               //Página onde será redirecionado em caso de sucesso.
-            cancel_url: process.env.STRIPE_CANCEL_URL                //Página onde será redirecionado caso seja cancelado.
+            mode: 'subscription',
+            allow_promotion_codes: true,
+            success_url: process.env.STRIPE_SUCCESS_URL,
+            cancel_url: process.env.STRIPE_CANCEL_URL
         })
 
-        return res.status(200).json({ sessionId: stripeCheckoutSession.id });
-
+        return res.status(200).json({ sessionId: stripeCheckoutSession.id })
     } else {
-        res.setHeader('Allow', 'POST')                  //Explicando pro front que o método que a rota aceita é POST.
-        res.status(405).end('Method not allowed');
+        res.setHeader('Allow', 'POST')
+        res.status(405).end('Method not allowed')
     }
 }
