@@ -3,7 +3,7 @@ import { Readable } from 'stream';
 import Stripe from 'stripe';
 import { stripe } from '../../services/stripe';
 
-async function buffer(readable: Readable){   //Converte a Readable em um objeto.
+async function buffer(readable: Readable){   //Converte a Readable em um objeto ou string;
     const chunks = [];
 
     for await (const chunk of readable){
